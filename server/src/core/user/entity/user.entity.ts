@@ -8,7 +8,7 @@ export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ length: 16, charset: 'utf8mb4' })
+  @Column({ charset: 'utf8mb4' })
   username: string;
 
   @Column({ length: 16, charset: 'utf8mb4' })
@@ -51,6 +51,9 @@ export class User {
 
   @Column({ comment: '个人主页', nullable: true, charset: 'utf8mb4' })
   gitAddress: string;
+
+  @Column({ comment: 'wx用户', nullable: true, name: 'is_wx' })
+  isWx: boolean;
 
   @Column({ comment: '是否是超管', nullable: true })
   admin: number;

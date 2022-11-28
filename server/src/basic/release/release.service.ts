@@ -5,6 +5,7 @@ import { UserService } from '@/core/user/user.service';
 import { ReleaseStatus } from '@/common/enum/release';
 import { ApproverService } from '@/core/approver/approver.service';
 import { TypeormHelperService } from '@/common/typeorm-helper/typeorm-helper.service';
+import { SensitiveService } from '@/core/sensitive/sensitive.service';
 import { Release } from './entity/release.entity';
 import { ReleaseDto, ApproverDto, UpdateDto } from './release.interface';
 
@@ -15,6 +16,7 @@ export class ReleaseService extends TypeormHelperService<Release> {
     private releaseRepository: Repository<Release>,
     private userService: UserService,
     private approverService: ApproverService,
+    private sensitiveService: SensitiveService,
   ) {
     super(releaseRepository);
   }
@@ -37,7 +39,7 @@ export class ReleaseService extends TypeormHelperService<Release> {
   }
 
   async release(releaseDto: ReleaseDto, creator: string) {
-    const { img, type } = releaseDto;
+    const { img, type, title, content, description } = releaseDto;
     if (img?.length > 5) {
       throw new HttpException(
         '发布的图片不能超过5张。',
@@ -46,6 +48,9 @@ export class ReleaseService extends TypeormHelperService<Release> {
     }
     try {
       const userEntity = await this.userService.findNameOne(creator);
+      await this.sensitiveService.sensitiveCheck(title);
+      await this.sensitiveService.sensitiveCheck(content);
+      await this.sensitiveService.sensitiveCheck(description);
       const approverEntity = await this.approverService.find();
       await this.releaseRepository.insert({
         ...releaseDto,

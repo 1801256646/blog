@@ -4,6 +4,7 @@ import { AuthModule } from './auth/auth.module';
 import { ApproverModule } from './approver/approver.module';
 import { UploadModule } from './upload/upload.module';
 import { PasswordModule } from './password/password.module';
+import { SensitiveModule } from './sensitive/sensitive.module';
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import { PasswordModule } from './password/password.module';
     ApproverModule,
     UploadModule,
     PasswordModule,
+    SensitiveModule,
   ],
 })
 export class CoreModule {}

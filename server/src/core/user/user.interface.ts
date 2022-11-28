@@ -4,6 +4,10 @@ export interface CreateUser {
   password: string;
 
   cname: string;
+
+  isWx: boolean;
+
+  avatar: string;
 }
 
 export interface UpdateDto extends Partial<CreateUser> {

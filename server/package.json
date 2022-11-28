@@ -41,6 +41,7 @@
     "typeorm": "^0.3.10"
   },
   "devDependencies": {
+    "@nestjs/axios": "^1.0.0",
     "@nestjs/cli": "^9.0.0",
     "@nestjs/schedule": "^2.1.0",
     "@nestjs/schematics": "^9.0.0",

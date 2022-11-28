@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UserService } from '@/core/user/user.service';
 import { ReleaseService } from '@/basic/release/release.service';
+import { SensitiveService } from '@/core/sensitive/sensitive.service';
 import { Review } from './entity/review.entity';
 import { ReviewInterface, UpdateReview } from './review.interface';
 
@@ -13,6 +14,7 @@ export class ReviewService {
     private reviewRepository: Repository<Review>,
     private userService: UserService,
     private releaseService: ReleaseService,
+    private sensitiveService: SensitiveService,
   ) {}
 
   async findOne(id: number) {
@@ -28,6 +30,7 @@ export class ReviewService {
    */
   async create(dto: ReviewInterface, username: string) {
     const userEntity = await this.userService.findNameOne(username);
+    await this.sensitiveService.sensitiveCheck(dto.text);
     const releaseEntity = await this.releaseService.findOne(dto.id);
     await this.reviewRepository.insert({
       username: dto.username,

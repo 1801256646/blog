@@ -64,18 +64,11 @@ const Detail: FC = () => {
   };
 
   const handleComment = async (props: CommentReleaseReq) => {
-    try {
-      const { code, message: msg } = await commentRelease(props);
-      if (code === 0) {
-        message.success('评论成功');
-        setInputValue('');
-        run();
-      } else {
-        message.error(msg);
-      }
-    } catch (err: any) {
-      console.log(err.message)
-      message.error(err.message);
+    const { code } = await commentRelease(props);
+    if (code === 0) {
+      message.success('评论成功');
+      setInputValue('');
+      run();
     }
   };
 

@@ -2,6 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { TypeormHelperService } from '@/common/typeorm-helper/typeorm-helper.service';
+import { SensitiveService } from '@/core/sensitive/sensitive.service';
 import { User } from './entity/user.entity';
 import { CreateUser, UpdateDto, UserFocus, GetAllUser } from './user.interface';
 import { PasswordService } from '../password/password.service';
@@ -12,6 +13,7 @@ export class UserService extends TypeormHelperService<User> {
     @InjectRepository(User)
     private userRepository: Repository<User>,
     private passwordService: PasswordService,
+    private sensitiveService: SensitiveService,
   ) {
     super(userRepository);
   }
@@ -55,15 +57,18 @@ export class UserService extends TypeormHelperService<User> {
   }
 
   async add(user: CreateUser) {
-    const { password, username, cname } = user;
+    const { password, username, cname, isWx, avatar } = user;
     const entity = await this.findNameOne(username);
     if (entity) {
       throw new HttpException('用户名已存在', HttpStatus.BAD_REQUEST);
     }
+    await this.sensitiveService.sensitiveCheck(cname);
     const list = await this.userRepository.insert({
       username,
       cname,
       createTime: new Date(),
+      isWx,
+      avatar,
     });
     await this.passwordService.add({
       username,

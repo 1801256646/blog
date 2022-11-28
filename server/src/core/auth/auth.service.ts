@@ -13,10 +13,13 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async validateUser(username: string, password: string) {
+  async validateUser(username: string, password: string, isWx: boolean) {
     const user = await this.userService.findNameOne(username);
     if (!user) {
       throw new HttpException('用户名不存在', HttpStatus.BAD_REQUEST);
+    }
+    if (isWx && user.isWx) {
+      return user;
     }
     const passwordEntity = await this.passwordService.findOne(username);
     if (user && passwordEntity.password === password) {
