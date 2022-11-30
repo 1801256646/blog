@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UserService } from '@/core/user/user.service';
@@ -30,6 +30,9 @@ export class ReplyService {
    */
   async reply(dto: ReplyComment, username: string) {
     const { id, replier, text } = dto;
+    if (!text) {
+      throw new HttpException('评论内容不能为空', HttpStatus.BAD_REQUEST);
+    }
     const userEntity = await this.userService.findNameOne(username);
     await this.sensitiveService.sensitiveCheck(text);
     const reviewEntity = await this.reviewService.findOne(id);
