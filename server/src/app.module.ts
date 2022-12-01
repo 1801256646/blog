@@ -8,7 +8,7 @@ import { CoreModule } from '@/core/core.module';
 import { BusinessModule } from '@/business/business.module';
 import { BasicModule } from '@/basic/basic.module';
 import { ScheduleModule } from '@nestjs/schedule';
-import { global } from './config';
+import { global, sensitive } from './config';
 import databaseConfig from './config/database';
 
 const { env } = process;
@@ -16,7 +16,7 @@ const { env } = process;
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [global, databaseConfig],
+      load: [global, databaseConfig, sensitive],
       envFilePath: ['.env'],
     }),
     ScheduleModule.forRoot(),

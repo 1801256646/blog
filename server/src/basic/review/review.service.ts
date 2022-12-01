@@ -29,12 +29,10 @@ export class ReviewService {
    * 创建第一条评论
    */
   async create(dto: ReviewInterface, username: string) {
-    console.log(dto, username);
     if (!dto.text) {
       throw new HttpException('评论内容不能为空', HttpStatus.BAD_REQUEST);
     }
     const userEntity = await this.userService.findNameOne(username);
-    console.log(userEntity);
     await this.sensitiveService.sensitiveCheck(dto.text);
     const releaseEntity = await this.releaseService.findOne(dto.id);
     await this.reviewRepository.insert({

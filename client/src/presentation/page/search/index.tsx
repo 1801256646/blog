@@ -78,7 +78,6 @@ const Search: FC = () => {
                 endMessage={<Divider plain>It is all, nothing more 🤐</Divider>}
                 next={() => {
                   setPage(page + 1);
-                  console.log(111);
                 }}
               >
                 <List

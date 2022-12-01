@@ -10,11 +10,12 @@ export class SensitiveService {
     private configService: ConfigService,
   ) {}
 
-  async sensitiveCheck(content) {
-    const { appKey = '' } = this.configService.get('sensitive');
+  async sensitiveCheck(content = 'test') {
+    const appKey = this.configService.get('sensitive.appKey');
+
     const { data } = await firstValueFrom(
       this.httpService.post('/api/App/Common_BannerWord/Check', {
-        content: content || 'test',
+        content: content,
         return_data: 1,
         app_key: appKey,
       }),
