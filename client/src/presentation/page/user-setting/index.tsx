@@ -9,7 +9,6 @@ import useAuth from '@/presentation/store/use-auth';
 import { rule } from '@/types/user';
 import { uploadCosFile } from '@/utils/file-cos';
 import styles from './index.module.scss';
-// import type { UploadProps } from 'antd/es/upload';
 import type { RcFile, UploadRequestOption as RcCustomRequestOptions } from 'rc-upload/lib/interface';
 
 const { TabPane } = Tabs;
@@ -31,10 +30,6 @@ const UserSetting: FC = () => {
     ready: !!user?.id,
   });
 
-  //   const handleChange: UploadProps['onChange'] = async (info) => { 
-   
-  //   };
-
   const handleFinish = (value: Record<string, string>) => {
     const { cname, description, gitAddress } = value;
     updateUserRun({
@@ -55,11 +50,6 @@ const UserSetting: FC = () => {
   };
     
   const handleCustomReques = async (options: RcCustomRequestOptions) => {
-    console.log({
-      SecretId: process.env.SECRETID || '',
-      SecretKey: process.env.SECRETKEY || '',
-    })
-    console.log(process.env)
     const { file, onSuccess, onError } = options;
     try {
       const url = await uploadCosFile(file as RcFile);
@@ -97,7 +87,6 @@ const UserSetting: FC = () => {
               <Form.Item label='头像'>
                 <Upload
                   accept='.png, .webp, .jpg, .gif, .jpeg'
-                  //   onChange={handleChange}
                   customRequest={handleCustomReques}
                 >
                   <Avatar size={180} src={fileUrl} icon={<UserOutlined />} />

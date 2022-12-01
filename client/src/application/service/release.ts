@@ -1,3 +1,4 @@
+import { UploadFile } from 'antd';
 import { CommentType } from '@/application/enum/release';
 import { ReleaseType } from '@/application/enum/release';
 import { ReleaseData } from './home';
@@ -7,7 +8,7 @@ import { UserData } from './user';
 export type ReleasePostReq = {
     title: string;
     content: string;
-    img?: any;
+    img?: UploadFile[];
     description?: string;
     type: ReleaseType;
 }

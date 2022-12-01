@@ -1,6 +1,6 @@
 import { PlusOutlined } from '@ant-design/icons';
 import { useRequest } from 'ahooks';
-import { Card, Form, Input, Button, message, Upload, UploadFile, Space } from 'antd';
+import { Card, Form, Input, Button, message, Upload, Space, UploadFile } from 'antd';
 import { observer } from 'mobx-react';
 import React, { FC, useState, useEffect } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
@@ -8,9 +8,11 @@ import { ReleaseType } from '@/application/enum/release';
 import { ReleasePost, ReleasePostReq } from '@/application/service/release';
 import BodyScreen from '@/presentation/components/body-screen';
 import useAuth from '@/presentation/store/use-auth';
+import { uploadCosFile } from '@/utils/file-cos';
 import MarketDown from './components/marketdown';
 import styles from './index.module.scss';
 import type { UploadProps } from 'antd/es/upload';
+import type { RcFile, UploadRequestOption as RcCustomRequestOptions } from 'rc-upload/lib/interface';
 
 const Release: FC = () => {
   const history = useHistory();
@@ -21,9 +23,9 @@ const Release: FC = () => {
   const isTips = type === 'tips';
   const title = isTips ? '发布帖子' : '发布文章';
   const [form] = Form.useForm();
-  const [fileList, setFileList] = useState<UploadFile[]>([]);
   const [contentValue, setValue] = useState<string>('');
   const [inputValue, setInputValue] = useState<string>('');
+  const [fileList, setFileList] = useState<UploadFile[]>([]);
 
   const { loading, run } = useRequest(ReleasePost, {
     manual: true,
@@ -34,9 +36,10 @@ const Release: FC = () => {
   });
 
   const handleFinish = (value: ReleasePostReq) => {
+    const { img } = value;
     run({
       ...value,
-      img: fileList?.map(item => item.response?.data?.url),
+      img: img?.map(item => item.response?.data?.url),
       type: ReleaseType.Tips,
     });
   };
@@ -51,10 +54,21 @@ const Release: FC = () => {
     });
   };
 
-  const handleChange: UploadProps['onChange'] = (info) => {
+  const handleCustomReques = async (options: RcCustomRequestOptions) => {
+    const { file, onSuccess, onError } = options;
+    try {
+      const url = await uploadCosFile(file as RcFile);
+      onSuccess?.(url);
+    } catch (err) {
+      onError?.(err as Error);
+      console.error(err);
+    }
+  }
+    
+  const handleChange: UploadProps['onChange']  = (info) => {
     setFileList(info.fileList);
   };
-
+    
   useEffect(() => {
     if (!localStorage.getItem('token')) {
       message.info('请先登录');
@@ -77,13 +91,12 @@ const Release: FC = () => {
                 <Form.Item label='内容' name='content'>
                   <Input.TextArea placeholder='请输入简介' showCount autoSize={{ minRows: 15 }} />
                 </Form.Item>
-                <Form.Item label='图片'>
+                <Form.Item label='图片' name='img'>
                   <Upload
-                    action={`${window.location.origin}/api/upload`}
                     accept='.png, .webp, .jpg, .gif, .jpeg'
-                    onChange={handleChange}
-                    fileList={fileList}
+                    customRequest={handleCustomReques}
                     listType="picture-card"
+                    onChange={handleChange}
                   >
                     {fileList.length < 5 && <div>
                       <PlusOutlined />
