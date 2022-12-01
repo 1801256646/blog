@@ -27,7 +27,7 @@ const { env } = process;
       username: env.DB_NAME || 'root',
       port: Number(env.DB_PORT) || 3306,
       host: '0.0.0.0',
-      password: env.DB_PASSWORD || '000000raftx',
+      password: env.DB_PASSWORD,
       type: 'mysql',
       database: env.DB_DATABASE || 'blog',
       synchronize: false,
