@@ -7,8 +7,10 @@ import { UpdateUser, getUserInfo } from '@/application/service/user';
 import BodyScreen from '@/presentation/components/body-screen';
 import useAuth from '@/presentation/store/use-auth';
 import { rule } from '@/types/user';
+import { uploadCosFile } from '@/utils/file-cos';
 import styles from './index.module.scss';
-import type { UploadProps } from 'antd/es/upload';
+// import type { UploadProps } from 'antd/es/upload';
+import type { RcFile, UploadRequestOption as RcCustomRequestOptions } from 'rc-upload/lib/interface';
 
 const { TabPane } = Tabs;
 
@@ -29,11 +31,9 @@ const UserSetting: FC = () => {
     ready: !!user?.id,
   });
 
-  const handleChange: UploadProps['onChange'] = (info) => { 
-    if (info.file.status === 'done') {
-      setFileUrl(info.file.response.data.url);
-    };
-  };
+  //   const handleChange: UploadProps['onChange'] = async (info) => { 
+   
+  //   };
 
   const handleFinish = (value: Record<string, string>) => {
     const { cname, description, gitAddress } = value;
@@ -53,6 +53,23 @@ const UserSetting: FC = () => {
       username,
     });
   };
+    
+  const handleCustomReques = async (options: RcCustomRequestOptions) => {
+    console.log({
+      SecretId: process.env.SECRETID || '',
+      SecretKey: process.env.SECRETKEY || '',
+    })
+    console.log(process.env)
+    const { file, onSuccess, onError } = options;
+    try {
+      const url = await uploadCosFile(file as RcFile);
+      onSuccess?.(url);
+      setFileUrl(url);
+    } catch (err) {
+      onError?.(err as Error);
+      console.error(err);
+    }
+  }
 
   useEffect(() => {
     if (data) {
@@ -79,9 +96,9 @@ const UserSetting: FC = () => {
             >
               <Form.Item label='头像'>
                 <Upload
-                  action={`${window.location.origin}/api/upload`}
                   accept='.png, .webp, .jpg, .gif, .jpeg'
-                  onChange={handleChange}
+                  //   onChange={handleChange}
+                  customRequest={handleCustomReques}
                 >
                   <Avatar size={180} src={fileUrl} icon={<UserOutlined />} />
                 </Upload>
