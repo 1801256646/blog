@@ -11,7 +11,7 @@ export class TrendingService {
   ) {}
 
   async home(dto: HomeListDto) {
-    const { page, pageSize, orderBy, username } = dto;
+    const { page, pageSize, orderBy, username, isTag } = dto;
     let sort = 'release.updateTime';
     if (orderBy === 'browse') {
       sort = 'release.browse';
@@ -28,6 +28,12 @@ export class TrendingService {
       .leftJoinAndSelect('review.user', 'reviewUser')
       .leftJoinAndSelect('childReview.user', 'replyUser')
       .where('release.status=1');
+
+    if (isTag) {
+      query.andWhere(`release.tags LIKE '%${orderBy}%'`, {
+        tag: orderBy,
+      });
+    }
 
     if (username) {
       const userEntity = await this.userService.findNameOne(username);

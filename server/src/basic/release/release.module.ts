@@ -6,6 +6,7 @@ import { SensitiveModule } from '@/core/sensitive/sensitive.module';
 import { ReleaseController } from './release.controller';
 import { ReleaseService } from './release.service';
 import { Release } from './entity/release.entity';
+import { TagsModule } from '../tags/tags.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { Release } from './entity/release.entity';
     UserModule,
     ApproverModule,
     SensitiveModule,
+    TagsModule,
   ],
   controllers: [ReleaseController],
   exports: [ReleaseService],

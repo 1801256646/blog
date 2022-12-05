@@ -6,6 +6,7 @@ import { ReleaseStatus } from '@/common/enum/release';
 import { ApproverService } from '@/core/approver/approver.service';
 import { TypeormHelperService } from '@/common/typeorm-helper/typeorm-helper.service';
 import { SensitiveService } from '@/core/sensitive/sensitive.service';
+import { TagsService } from '../tags/tags.service';
 import { Release } from './entity/release.entity';
 import { ReleaseDto, ApproverDto, UpdateDto } from './release.interface';
 
@@ -17,6 +18,7 @@ export class ReleaseService extends TypeormHelperService<Release> {
     private userService: UserService,
     private approverService: ApproverService,
     private sensitiveService: SensitiveService,
+    private tagsService: TagsService,
   ) {
     super(releaseRepository);
   }
@@ -39,7 +41,14 @@ export class ReleaseService extends TypeormHelperService<Release> {
   }
 
   async release(releaseDto: ReleaseDto, creator: string) {
-    const { img, type, title, content, description } = releaseDto;
+    const {
+      img,
+      type,
+      title,
+      content,
+      description,
+      tags = ['交流'],
+    } = releaseDto;
     if (img?.length > 5) {
       throw new HttpException(
         '发布的图片不能超过5张。',
@@ -64,7 +73,11 @@ export class ReleaseService extends TypeormHelperService<Release> {
         user: userEntity,
         type,
         creator,
+        tags,
       });
+      const tagList = tags.map((item) => this.tagsService.add(item));
+      await Promise.all(tagList);
+      return;
     } catch (err) {
       throw new HttpException(err, HttpStatus.BAD_REQUEST);
     }

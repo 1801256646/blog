@@ -8,6 +8,7 @@ export type getHomeListReq = {
     pageSize: number;
     orderBy?: ReleaseOrderBy;
     username?: string;
+    isTag?: boolean;
 }
 export type getHomeListRes = {
     total: number;
@@ -29,6 +30,7 @@ export type ReleaseData = {
     user?: UserData;
     type: ReleaseType;
     status?: ReleaseStatus;
+    tags?: string[];
 }
 
 export type ReviewData = {
@@ -44,11 +46,25 @@ export type ReplyData = ReviewData & {
     replier?: string;
 }
 
+export type TagsData = {
+    id: number;
+    tag: string;
+    number: number;
+}
+
 // 发布帖子
 export const getHomeList = async (data: getHomeListReq): Promise<CommonAPI<getHomeListRes>> => {
-  const res = await client.get({
+  const res = await client.post({
     url: '/trending',
     data,
+  });
+  return res.data;
+};
+
+// 获取前三个发布量最高的tag
+export const getTagsList = async (): Promise<CommonAPI<TagsData[]>> => {
+  const res = await client.get({
+    url: '/tags',
   });
   return res.data;
 };

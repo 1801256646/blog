@@ -1,5 +1,5 @@
 import { ReadOutlined , LikeFilled, LikeOutlined, MessageOutlined } from '@ant-design/icons';
-import { Avatar, Tooltip, Comment, Typography, Space, message } from 'antd';
+import { Avatar, Tooltip, Comment, Typography, Space, message, Tag } from 'antd';
 import { observer } from 'mobx-react';
 import moment from 'moment';
 import React, { FC, useState, useEffect, useMemo } from 'react';
@@ -103,6 +103,9 @@ const HomeList: FC<{ release: ReleaseData, keyword?: string }> = (props) => {
             {release?.img?.map((item, index) => (
               <img alt='' src={item} key={index} />
             ))}
+          </div>
+          <div className={styles.tags}>
+            {release?.tags?.map((item, idx) => <Tag key={idx}>{item}</Tag>)}
           </div>
         </div>
       }

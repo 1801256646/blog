@@ -6,4 +6,6 @@ export interface HomeListDto {
   orderBy?: string;
 
   username?: string;
+
+  isTag?: boolean;
 }

@@ -31,7 +31,13 @@ export class User {
   })
   description: string;
 
-  @Column({ comment: '头像', nullable: true, charset: 'utf8mb4' })
+  @Column({
+    comment: '头像',
+    nullable: true,
+    charset: 'utf8mb4',
+    default:
+      'http://blog-1304453302.cos.ap-guangzhou.myqcloud.com/1669971749823.jpeg',
+  })
   avatar: string;
 
   @OneToMany(() => Release, (release) => release.user)

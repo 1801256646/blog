@@ -11,6 +11,8 @@ export interface ReleaseDto {
   content: string;
 
   type: number;
+
+  tags?: string[];
 }
 
 export interface ApproverDto {

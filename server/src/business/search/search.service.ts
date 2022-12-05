@@ -23,7 +23,8 @@ export class SearchService {
           qb
             .where(`release.title LIKE '%${keyword}%'`)
             .orWhere(`release.description LIKE '%${keyword}%'`)
-            .orWhere(`release.content LIKE '%${keyword}%'`),
+            .orWhere(`release.content LIKE '%${keyword}%'`)
+            .orWhere(`release.tags LIKE '%${keyword}%'`),
         ),
       );
     }

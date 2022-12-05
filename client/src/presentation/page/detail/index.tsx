@@ -1,6 +1,6 @@
 import { UserOutlined, LikeOutlined, LikeFilled, ReadOutlined, HeartOutlined } from '@ant-design/icons';
 import { useRequest } from 'ahooks';
-import { Avatar, Comment, Card, Typography, Space, Spin, message, Input, Button, Empty } from 'antd';
+import { Avatar, Comment, Card, Typography, Space, Spin, message, Input, Button, Empty, Tag } from 'antd';
 import { observer } from 'mobx-react';
 import moment from 'moment';
 import React, { FC, useState, useEffect, useMemo } from 'react';
@@ -176,6 +176,9 @@ const Detail: FC = () => {
                       <Zmage alt='' src={item} key={idx} />
                     ))}
                   </div>
+                  <div className={styles.tags}>
+                    {data?.data?.tags?.map((item, idx) => <Tag key={idx}>{item}</Tag>)}
+                  </div>      
                 </Card>
                 <Card className={styles.comments}>
                   <p className={styles.commentsSum}>{`${commentSum}条评论`}</p>

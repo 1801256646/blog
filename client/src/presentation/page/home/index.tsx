@@ -1,12 +1,13 @@
 import { useRequest } from 'ahooks';
-import { Card, Tabs, Button, Empty } from 'antd';
+import { Card, Tabs, Button, Empty, Spin } from 'antd';
 import { observer } from 'mobx-react';
 import React, { FC, useState } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import { ReleaseOrderBy } from '@/application/enum/release';
-import { getHomeList, ReleaseData } from '@/application/service/home';
+import { getHomeList, ReleaseData, getTagsList } from '@/application/service/home';
 import { authorList } from '@/application/service/user';
 import BodyScreen from '@/presentation/components/body-screen';
+import { ReleaseOrderByList } from '@/presentation/config/release';
 import useAuth from '@/presentation/store/use-auth';
 import HomeList from './components/home-list';
 import Leaderboard from './components/leaderboard';
@@ -30,6 +31,7 @@ const Home: FC = () => {
     pageSize: pagination.pageSize,
     orderBy: orderBy,
     username: orderBy === ReleaseOrderBy.UserFocus ? user?.username : undefined,
+    isTag: !ReleaseOrderByList.includes(orderBy),
   }), {
     ready: orderBy === ReleaseOrderBy.UserFocus ? !!user?.username : true,
     refreshDeps: [orderBy, pagination],
@@ -43,7 +45,9 @@ const Home: FC = () => {
     },
   });
 
-  const { data: authorListData } = useRequest(() => authorList());
+  const { data: authorListData, loading: authorListLoading } = useRequest(() => authorList());
+    
+  const { data: tagsListData, loading: getTagsListLoading } = useRequest(() => getTagsList());
 
   const handleTabsChange = (key: string) => {
     setOrderBy(key as ReleaseOrderBy);
@@ -52,14 +56,19 @@ const Home: FC = () => {
   };
 
   return (
-    <BodyScreen>
-      <div className={styles.home}>
+    <Spin spinning={getTagsListLoading || authorListLoading}>
+      <BodyScreen className={styles.home}>
         <div>
           <Tabs tabPosition='left' onChange={handleTabsChange} className={styles.leftTabs} activeKey={orderBy}>
-            <TabPane key='updateTime' tab='最新发布'></TabPane>
-            <TabPane key='browse' tab='浏览量'></TabPane>
-            <TabPane key='focus' tab='点赞量'></TabPane>
-            {isLogin && <TabPane key='userFocus' tab='关注的人'></TabPane>}
+            <TabPane key='updateTime' tab='最新发布' />
+            <TabPane key='browse' tab='浏览量' />
+            <TabPane key='focus' tab='点赞量' />
+            {isLogin && <TabPane key='userFocus' tab='关注的人' />}
+            {
+              tagsListData?.data?.map(item => (
+                <TabPane key={item.tag} tab={item.tag} />
+              ))
+            }
           </Tabs>
         </div>
         <div className={styles.list}>
@@ -79,14 +88,14 @@ const Home: FC = () => {
                 className={styles.loadingBtn}
                 type='primary'
               >
-                                查看更多
+                查看更多
               </Button>
             )
           }
         </div>
         <Leaderboard list={authorListData?.data} />
-      </div>
-    </BodyScreen>
+      </BodyScreen>
+    </Spin>
   );
 };
 

@@ -1,4 +1,4 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Body, Controller, Post } from '@nestjs/common';
 import { TrendingService } from './trending.service';
 import { HomeListDto } from './trending.interface';
 
@@ -6,8 +6,8 @@ import { HomeListDto } from './trending.interface';
 export class TrendingController {
   constructor(private readonly trendingService: TrendingService) {}
 
-  @Get()
-  async home(@Query() query: HomeListDto) {
-    return await this.trendingService.home(query);
+  @Post()
+  async home(@Body() body: HomeListDto) {
+    return await this.trendingService.home(body);
   }
 }

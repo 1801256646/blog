@@ -1,12 +1,13 @@
 import { PlusOutlined } from '@ant-design/icons';
 import { useRequest } from 'ahooks';
-import { Card, Form, Input, Button, message, Upload, Space, UploadFile } from 'antd';
+import { Card, Form, Input, Button, message, Upload, Space, UploadFile, Select } from 'antd';
 import { observer } from 'mobx-react';
 import React, { FC, useState, useEffect } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import { ReleaseType } from '@/application/enum/release';
 import { ReleasePost, ReleasePostReq } from '@/application/service/release';
 import BodyScreen from '@/presentation/components/body-screen';
+import { ReleaseTags } from '@/presentation/config/release';
 import useAuth from '@/presentation/store/use-auth';
 import { uploadCosFile } from '@/utils/file-cos';
 import MarketDown from './components/marketdown';
@@ -39,7 +40,7 @@ const Release: FC = () => {
     const { img } = value;
     run({
       ...value,
-      img: img?.map(item => item.response?.data?.url),
+      img: img?.map((item: any) => item.response),
       type: ReleaseType.Tips,
     });
   };
@@ -69,6 +70,13 @@ const Release: FC = () => {
     setFileList(info.fileList);
   };
     
+  const handleTagsChange = (value: string[]) => {
+    if (value.length > 5) {
+      message.warning('标签数量不能超过5个！')
+      form.setFieldValue('tags', value.slice(0, 5));
+    }
+  };
+    
   useEffect(() => {
     if (!localStorage.getItem('token')) {
       message.info('请先登录');
@@ -87,6 +95,9 @@ const Release: FC = () => {
               <>
                 <Form.Item label='标题' name='title' rules={[{ required: true, message: '标题不能为空' }]}>
                   <Input placeholder='请输入标题' />
+                </Form.Item>
+                <Form.Item name='tags' label='标签'>
+                  <Select mode='tags' placeholder='请输入标签' options={ReleaseTags} onChange={handleTagsChange} />
                 </Form.Item>
                 <Form.Item label='内容' name='content'>
                   <Input.TextArea placeholder='请输入简介' showCount autoSize={{ minRows: 15 }} />
@@ -112,6 +123,9 @@ const Release: FC = () => {
                 </Form.Item>
                 <Form.Item name='description' wrapperCol={{ span: 24 }}>
                   <Input placeholder='请输入描述' className={styles.input} />
+                </Form.Item>
+                <Form.Item name='tag' wrapperCol={{ span: 24 }}>
+                  <Select mode='tags' placeholder='请输入标签' options={ReleaseTags} />
                 </Form.Item>
                 <MarketDown setValue={setValue} />
                 <Button type='primary' className={styles.releaseBtn} onClick={handleEssayClick} loading={loading}>发布</Button>

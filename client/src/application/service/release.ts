@@ -1,4 +1,3 @@
-import { UploadFile } from 'antd';
 import { CommentType } from '@/application/enum/release';
 import { ReleaseType } from '@/application/enum/release';
 import { ReleaseData } from './home';
@@ -8,9 +7,10 @@ import { UserData } from './user';
 export type ReleasePostReq = {
     title: string;
     content: string;
-    img?: UploadFile[];
+    img?: any;
     description?: string;
     type: ReleaseType;
+    tags?: string;
 }
 export type FocusReleaseReq = {
     releaseId: number;

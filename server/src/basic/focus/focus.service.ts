@@ -41,7 +41,7 @@ export class FocusService {
   async collection(dto: CollectionDto, username: string) {
     const { releaseId } = dto;
     const userEntity = await this.userService.findNameOne(username);
-    if (userEntity.collection?.find((item) => item === releaseId)) {
+    if (userEntity?.collection?.find((item) => item === releaseId)) {
       const remote = { ...userEntity };
       remote.collection.splice(
         remote.collection.findIndex((item) => item === releaseId),
@@ -52,9 +52,10 @@ export class FocusService {
       });
       return updateUser;
     }
-    await this.userService.update(username, {
+    const updateUser = await this.userService.update(username, {
       collection: [...(userEntity?.collection || []), releaseId],
     });
+    return updateUser;
   }
 
   async browse(releaseId: number) {

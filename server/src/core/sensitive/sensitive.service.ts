@@ -11,7 +11,9 @@ export class SensitiveService {
   ) {}
 
   async sensitiveCheck(content = 'test') {
-    const appKey = this.configService.get('sensitive.appKey');
+    const appKey =
+      this.configService.get('sensitive.appKey') ||
+      process.env.SENSITIVE_APPKEY;
 
     const { data } = await firstValueFrom(
       this.httpService.post('/api/App/Common_BannerWord/Check', {

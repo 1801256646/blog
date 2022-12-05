@@ -66,4 +66,11 @@ export class Release {
 
   @ManyToOne(() => User, (user) => user.release)
   user: User;
+
+  @Column({
+    comment: '标签',
+    type: 'simple-array',
+    charset: 'utf8mb4',
+  })
+  tags: string[];
 }
