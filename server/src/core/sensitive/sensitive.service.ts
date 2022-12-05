@@ -10,14 +10,14 @@ export class SensitiveService {
     private configService: ConfigService,
   ) {}
 
-  async sensitiveCheck(content = 'test') {
+  async sensitiveCheck(content) {
     const appKey =
       this.configService.get('sensitive.appKey') ||
       process.env.SENSITIVE_APPKEY;
 
     const { data } = await firstValueFrom(
       this.httpService.post('/api/App/Common_BannerWord/Check', {
-        content: content,
+        content: content || 'test',
         return_data: 1,
         app_key: appKey,
       }),
