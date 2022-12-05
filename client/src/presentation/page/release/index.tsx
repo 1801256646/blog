@@ -42,7 +42,7 @@ const Release: FC = () => {
     const { img } = value;
     run({
       ...value,
-      img: img?.map((item: any) => item.response),
+      img: img?.fileList?.map((item: any) => item.response),
       type: ReleaseType.Tips,
     });
   };
@@ -133,7 +133,7 @@ const Release: FC = () => {
                   <Input placeholder='请输入描述' className={styles.input} />
                 </Form.Item>
                 <Form.Item name='tags' wrapperCol={{ span: 24 }}>
-                  <Select mode='tags' placeholder='请输入标签' options={options} loading={tagListLoading} />
+                  <Select mode='tags' placeholder='请输入标签' options={options} loading={tagListLoading} onChange={handleTagsChange} />
                 </Form.Item>
                 <MarketDown setValue={setValue} />
                 <Button type='primary' className={styles.releaseBtn} onClick={handleEssayClick} loading={loading}>发布</Button>
