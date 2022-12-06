@@ -1,6 +1,6 @@
 import { UserOutlined, LikeOutlined, LikeFilled, ReadOutlined, HeartOutlined } from '@ant-design/icons';
 import { useRequest } from 'ahooks';
-import { Avatar, Comment, Card, Typography, Space, Spin, message, Input, Button, Empty, Tag } from 'antd';
+import { Avatar, Comment, Card, Typography, Space, Spin, message, Input, Button, Empty, Tag, Image } from 'antd';
 import { observer } from 'mobx-react';
 import moment from 'moment';
 import React, { FC, useState, useEffect, useMemo } from 'react';
@@ -8,8 +8,7 @@ import ReactMarkDown from 'react-markdown';
 import { useHistory, useParams } from 'react-router-dom';
 import {Prism as SyntaxHighlighter} from 'react-syntax-highlighter'
 import { dracula } from 'react-syntax-highlighter/dist/esm/styles/prism'
-import Zmage from 'react-zmage';
-import { CommentType } from '@/application/enum/release';
+import { CommentType, ReleaseType } from '@/application/enum/release';
 import { ReleaseStatus } from '@/application/enum/release';
 import { releaseDetail, focusRelease, browseRelease, commentRelease, CommentReleaseReq } from '@/application/service/release';
 import { getUserInfo, focusUser } from '@/application/service/user';
@@ -150,8 +149,8 @@ const Detail: FC = () => {
                     }
                   />
                   <Paragraph style={{ 'whiteSpace': 'pre-line' }} className={styles.content}>
-                    {data?.data?.content && <ReactMarkDown
-                      children={data?.data?.content || ''}components={{
+                    {data?.data?.type === ReleaseType.Article ? <ReactMarkDown
+                      children={data?.data?.content || ''} components={{
                         code({node, inline, className, children, ...props}) {
                           const match = /language-(\w+)/.exec(className || '')
                           return !inline && match ? (
@@ -169,12 +168,14 @@ const Detail: FC = () => {
                           )
                         }
                       }}
-                    />}
+                    /> : <p>{data?.data?.content}</p>}
                   </Paragraph>
                   <div className={styles.image}>
-                    {data?.data?.img?.map((item, idx) => (
-                      <Zmage alt='' src={item} key={idx} />
-                    ))}
+                    <Image.PreviewGroup>
+                      {data?.data?.img?.map((item, idx) => (
+                        <Image src={item} key={idx} />
+                      ))}
+                    </Image.PreviewGroup>
                   </div>
                   <div className={styles.tags}>
                     {data?.data?.tags?.map((item, idx) => <Tag key={idx}>{item}</Tag>)}

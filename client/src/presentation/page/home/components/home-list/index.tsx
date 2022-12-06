@@ -1,5 +1,5 @@
 import { ReadOutlined , LikeFilled, LikeOutlined, MessageOutlined } from '@ant-design/icons';
-import { Avatar, Tooltip, Comment, Typography, Space, message, Tag } from 'antd';
+import { Avatar, Tooltip, Comment, Typography, Space, message, Tag, Image } from 'antd';
 import { observer } from 'mobx-react';
 import moment from 'moment';
 import React, { FC, useState, useEffect, useMemo } from 'react';
@@ -99,10 +99,12 @@ const HomeList: FC<{ release: ReleaseData, keyword?: string }> = (props) => {
           <Paragraph ellipsis={{ rows: 3 }} className={styles.content}>
             <Mark name={release.description ?? release.content} keyword={keyword || ''} />
           </Paragraph>
-          <div className={styles.homeListImage}>
-            {release?.img?.map((item, index) => (
-              <img alt='' src={item} key={index} />
-            ))}
+          <div className={styles.homeListImage} onClick={(e) => e.stopPropagation()}>
+            <Image.PreviewGroup>
+              {release?.img?.map((item, index) => (
+                <Image alt='' src={item} key={index} />
+              ))}
+            </Image.PreviewGroup>
           </div>
           <div className={styles.tags}>
             {release?.tags?.map((item, idx) => <Tag key={idx}>{item}</Tag>)}

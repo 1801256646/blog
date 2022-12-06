@@ -24,14 +24,23 @@
 
     .content {
         font-size: 15px;
-        line-height: 30px;
+        line-height: 15px;
+
+        p {
+            line-height: 30px;
+        }
     }
 
     .image {
         display: flex;
-        img {
-            width: 180px;
-            margin: 10px 10px 10px 0;
+        :global {
+            .ant-image {
+                margin: 10px 10px 10px 0;
+
+                img {
+                    width: 180px;
+                }
+            }
         }
     }
 
