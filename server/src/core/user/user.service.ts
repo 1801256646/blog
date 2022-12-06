@@ -70,6 +70,11 @@ export class UserService extends TypeormHelperService<User> {
       isWx,
       avatar,
     });
+    const userEntity = await this.findNameOne(username);
+    await this.focus({
+      userFocus: 1,
+      userId: userEntity.id,
+    });
     await this.passwordService.add({
       username,
       password,
